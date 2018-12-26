@@ -153,7 +153,7 @@ public class ParseUrl {
             int nian = Calendar.getInstance().get(Calendar.YEAR);
             if (yue == 0) {
                 nian = nian - 1;
-                yue = 11;
+                yue = 12;
             }
             URL_STR = URL_STR + (nian + "").substring(2) + yue + "00." + type;
             HttpGet httpGet = new HttpGet(URL_STR);
