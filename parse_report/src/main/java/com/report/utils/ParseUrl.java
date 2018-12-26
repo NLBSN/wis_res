@@ -1,16 +1,20 @@
 package com.report.utils;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-
+import com.lowagie.text.DocumentException;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 public class ParseUrl {
 
@@ -135,6 +139,78 @@ public class ParseUrl {
         }
 //		System.out.println(content);
         return content;
+    }
+
+    public void downLoad(String URL_STR, String localFileName, String type) {
+        // String URL_STR = "https://cmdp.ncc-cma.net/upload/upload2/yxpj/qhpj_m       181100.doc";
+        // localFileName = "D:/fenfa_zidongdua/tqkj/qhpj/tqkj_qhpj_yyyymmdd.doc";
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        OutputStream out = null;
+        InputStream in = null;
+
+        try {
+            int yue = Calendar.getInstance().get(Calendar.MONTH);
+            int nian = Calendar.getInstance().get(Calendar.YEAR);
+            if (yue == 0) {
+                nian = nian - 1;
+                yue = 11;
+            }
+            URL_STR = URL_STR + (nian + "").substring(2) + yue + "00." + type;
+            HttpGet httpGet = new HttpGet(URL_STR);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            StatusLine statusLine = httpResponse.getStatusLine();
+            if (!statusLine.toString().contains("200")) {
+                System.out.println("需要下载的文件不存在！！！");
+                return;
+            }
+
+            HttpEntity entity = httpResponse.getEntity();
+            in = entity.getContent();
+
+            localFileName = localFileName.split("yyyy", -1)[0] + (nian + "").substring(2) + yue + "00." + type;
+            File file = new File(localFileName);
+            if (file.exists()) {
+                System.out.println(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文档已经存在：" + URL_STR);
+                return;//TODO 这儿要做修改
+            } else {
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                file.createNewFile();
+            }
+
+            out = new FileOutputStream(file);
+            byte[] buffer = new byte[4096];
+            int readLength = 0;
+            while ((readLength = in.read(buffer)) > 0) {
+                byte[] bytes = new byte[readLength];
+                System.arraycopy(buffer, 0, bytes, 0, readLength);
+                out.write(bytes);
+            }
+
+            out.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

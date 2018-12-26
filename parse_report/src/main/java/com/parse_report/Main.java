@@ -20,17 +20,15 @@ public class Main {
         // new ParseUrl().cycle();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("config.properties"), "gbk"));
 
-        String tmpLine ;
+        String tmpLine;
         StringBuffer stringBuffer = new StringBuffer();
-        while ((tmpLine= bufferedReader.readLine())!=null){
+        while ((tmpLine = bufferedReader.readLine()) != null) {
             stringBuffer.append(tmpLine);
             stringBuffer.append("\n");
         }
         new IOTxt().analys(stringBuffer);
         // System.out.println(stringBuffer);
         bufferedReader.close();
-
-
-
     }
+
 }

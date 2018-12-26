@@ -43,7 +43,15 @@ public class IOTxt {
                         }
                     }
                 } else if (tmpLies[0].equals("dierzhong")) {
-
+                    ParseUrl parseUrl = new ParseUrl();
+                    for (int i = 3; i < tmpLies.length; i++) {
+                        if (tmpLies[i].contains("txt")) {
+                            parseUrl.downLoad(tmpLies[2], tmpLies[i], "txt");
+                        }
+                        if (tmpLies[i].contains("doc")) {
+                            parseUrl.downLoad(tmpLies[2], tmpLies[i], "doc");
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
@@ -125,7 +133,7 @@ public class IOTxt {
                 }
                 File file = new File(filePath);
                 if (file.exists()) {
-                    System.out.println(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文档已经存在：" + filePath);
+                    System.out.println(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文档已经存在：" + filePath);
                     return;//TODO 这儿要做修改
                 } else {
                     if (!file.getParentFile().exists()) {
@@ -209,7 +217,7 @@ public class IOTxt {
                     par.clear();
                 }
             }
-            System.out.println(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文档写入完成：" + filePath);
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文档写入完成：" + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -346,7 +354,7 @@ public class IOTxt {
                 }
                 File file = new File(filePath);
                 if (file.exists()) {
-                    System.out.println(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(System.currentTimeMillis()) + " 图片已经存在：" + filePath);
+                    System.out.println(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(System.currentTimeMillis()) + " 图片已经存在：" + filePath);
                     return false;//TODO 这儿要做修改
                 } else {
                     if (!file.getParentFile().exists()) {
@@ -383,7 +391,7 @@ public class IOTxt {
                     // byte[] data = imageToJpg(aa);
                     fileOutputStream.write(data);
                     fileOutputStream.flush();
-                    System.out.println(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(System.currentTimeMillis()) + " 图片生成完成：" + filePath);
+                    System.out.println(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(System.currentTimeMillis()) + " 图片生成完成：" + filePath);
                     continue;
                 }
             }
@@ -460,7 +468,7 @@ public class IOTxt {
                 }
                 File file = new File(filePath);
                 if (file.exists()) {
-                    System.out.println(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文件已经存在：" + filePath);
+                    System.out.println(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文件已经存在：" + filePath);
                     return false;//TODO 这儿要做修改
                 } else {
                     if (!file.getParentFile().exists()) {
@@ -477,14 +485,14 @@ public class IOTxt {
             int i = 1;
             wc:
             while ((aa = bufferRead.readLine()) != null) {
-                if (aa.length() < 1 || aa.contains("http") || aa.contains("pppppppppp") || aa.contains("预报：") || aa.contains("预报:") || aa.contains("制作：") || aa.contains("制作:")) {
+                if (aa.length() < 1 || aa.contains("http") || aa.contains("pppppppppp") || (aa.contains("预报") && aa.contains("签发")) || (aa.contains("制作") && aa.contains("签发"))) {
                     continue;
                 }
                 bufferedWriter.write(aa.replaceAll("tttttttttttt", "").replaceAll("-------------", ""));
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
-            System.out.println(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文件写入完成：" + filePath);
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(System.currentTimeMillis()) + " 文件写入完成：" + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
