@@ -10,7 +10,6 @@ import java.util.Calendar;
 
 import com.lowagie.text.*;
 import com.lowagie.text.rtf.RtfWriter2;
-import com.sun.deploy.util.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
@@ -479,7 +478,7 @@ public class IOTxt {
                 break;
             }
 
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath)), "utf-8"));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath)), "gbk"));
 
             String aa = "";
             int i = 1;

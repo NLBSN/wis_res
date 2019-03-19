@@ -185,6 +185,7 @@ public class ParseUrl {
             while ((readLength = in.read(buffer)) > 0) {
                 byte[] bytes = new byte[readLength];
                 System.arraycopy(buffer, 0, bytes, 0, readLength);
+
                 out.write(bytes);
             }
 
