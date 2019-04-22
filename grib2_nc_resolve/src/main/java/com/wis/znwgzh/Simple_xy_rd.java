@@ -11,11 +11,12 @@
    Full documentation of the netCDF Java API can be found at:
    http://www.unidata.ucar.edu/software/netcdf-java/
 */
-package com.wis.guan;
+package com.wis.znwgzh;
 
+import ucar.ma2.ArrayInt;
+import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
-import ucar.ma2.*;
 
 import java.io.IOException;
 
@@ -23,8 +24,8 @@ public class Simple_xy_rd {
 
     public static void main(String args[]) throws IOException {
 
-        final int NX = 6;
-        final int NY = 12;
+        final int NX = 1441;
+        final int NY = 2880;
         // This is the array we will read.
         int[][] dataIn = new int[NX][NY];
 
@@ -32,7 +33,7 @@ public class Simple_xy_rd {
         // read-only access to the file.
         NetcdfFile dataFile = null;
         // String filename = "simple_xy.nc";
-        String filename = "D:\\data\\ec\\W_NAFP_C_ECMF_20190420065705_P_C1D04200000043000001.grib";
+        String filename = "D:/data/ec/NAFP_ECMF_FTM_TCC_LNO_GLB_20190421050000_00000-00300.NC";
         // Open the file.
         try {
 
@@ -40,7 +41,7 @@ public class Simple_xy_rd {
             System.out.println(dataFile.getVariables());
             // System.out.println(dataFile.getDimensions());
             // Retrieve the variable named "data"
-            Variable dataVar = dataFile.findVariable("data");
+            Variable dataVar = dataFile.findVariable("tcc");
 
             if (dataVar == null) {
                 System.out.println("Cant find Variable data");
