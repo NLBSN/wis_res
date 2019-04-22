@@ -1,15 +1,13 @@
 package com.wis.znwgzh;
 
-import jdk.management.resource.internal.inst.FileOutputStreamRMHooks;
 import org.junit.Test;
-import ucar.unidata.util.StringUtil2;
-import visad.browser.Convert;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 /**
@@ -19,85 +17,70 @@ import java.util.Random;
  * @Modified By:
  */
 public class ArrayToJpg {
+
     @Test
-    public void test1() {
-        System.out.println(Integer.parseInt("a", 16));
-        System.out.println(Integer.toHexString(10));
-        float[] floats = {65, 54, 312};
-        float[] floats1 = hsb2rgb(floats);
-        System.out.println(floats.length + "----" + floats1[0] + "--" + floats[1]);
+    public void test11() {
+        Double f = Double.valueOf((255 / 65534));
+        System.out.println(f);
     }
 
+
     public static void main(String[] args) throws Exception {
+        Float factor = 0.0038911099581896F;
+        String txtName = "D:\\data\\ec\\NAFP_ECMF_FTM_TCC_LNO_GLB_20190421050000_00000-00300.TXT";
+        String jpgName = "D:\\data\\ec\\test.png";
+
         // 获取文本中的二维数组
-        String[][] matrix = txtToArray();
+        Integer[][] matrix = txtToArray(txtName);
 
-        int[][] newArr = new int[matrix.length][matrix[0].length];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                // newArr[i][j] = Integer.parseInt(matrix[i][j].replaceAll(" ", ""), 16);
-                newArr[i][j] = Integer.parseInt(matrix[i][j].replaceAll(" ", ""));
-            }
-        }
-
-        // for (int i = 0; i < newArr.length; i++) {
-        //     for (int j = 0; j < newArr[i].length; j++) {
-        //         System.out.print(newArr[i][j] + "\t");
-        //     }
-        //     System.out.println();
-        // }
-
-        System.out.println("----------------------------------------------------------------------------------------------");
-        System.out.println("长度：" + newArr.length + "=============" + newArr[0].length + "==========" + newArr[10].length);
-
-        BufferedImage b = new BufferedImage(1441, 2880, BufferedImage.TYPE_INT_RGB);
-        Graphics g = b.getGraphics();
+        BufferedImage image = new BufferedImage(1441, 2880, BufferedImage.TYPE_INT_RGB);
+        Graphics graphics = image.getGraphics();
 
         Color[][] arr = new Color[1441][2880];// 一个像素点
         String tmp = new String();
         try {
-            for (int n = 0; n < 1441 - 1; n++) {
-                for (int m = 0; m < 2880 - 1; m++) {
-                    int[] ints = toRgba(newArr[n][m]);
-                    arr[n][m] = new Color(ints[0], ints[1], ints[2]);
-                    g.setColor(arr[n][m]);
-                    // g.setColor(arr[n][m]);
-                    g.fillRect(n * 1, m * 1, 1, 1);
+            // DecimalFormat df = new DecimalFormat("0.000000000");
+            // df.format((float)a/b)
+            for (int x = 0; x < matrix.length; x++) {
+                for (int y = 0; y < matrix[0].length; y++) {
+                    // int[] rgba = toThreeRgba(matrix[x][y]);
+                    // arr[x][y] = new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
+                    // double shuzhi = matrix[x][y] * 256.0077974791711D + 8388607.5D;
+                    // int shuzhi1 = (int) shuzhi;
+                    graphics.setColor(new Color(matrix[x][y] + 32767));
+                    graphics.fillRect(x * 1, y * 1, 1, 1);
                 }
             }
         } catch (Exception e) {
             System.out.println("-------" + tmp);
             e.printStackTrace();
         }
-        ImageIO.write(b, "png", new FileOutputStream(new File("D:\\data\\ec\\test.jpg")));
+        ImageIO.write(image, "png", new FileOutputStream(new File("D:\\data\\ec\\test.jpg")));
 
 
     }
 
-    public static String[][] txtToArray() {
-        String[][] array = new String[1441][2880];
+    public static Integer[][] txtToArray(String txtName) {
+        Integer[][] array = new Integer[1441][2880];
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(new File("D:\\data\\ec\\NAFP_ECMF_FTM_TCC_LNO_GLB_20190421050000_00000-00300.TXT")));
-            String line = new String();
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(txtName)), "utf-8"));
+            String line;
 
             int i = 0;
             while ((line = bufferedReader.readLine()) != null) {
-                String[] split = line.split("\t", -1);
-                for (int j = 0; j < split.length - 1; j++) {
-                    if (Integer.parseInt(split[j].trim()) < 0 && split[j].trim().length() > 0) {
-                        array[i][j] = "0";
+                String[] split = line.split(",", -1);
+                for (int j = 0; j < split.length; j++) {
+                    if (Integer.parseInt(split[j]) == 32767) {
+                        array[i][j] = 0;
                     } else {
-                        array[i][j] = split[j].trim();
+                        array[i][j] = Integer.parseInt(split[j]);
                     }
-                    System.out.print(array[i][j] + "\t");
                 }
                 i++;
-                System.out.println();
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println();
         } finally {
             try {
                 bufferedReader.close();
@@ -114,13 +97,69 @@ public class ArrayToJpg {
      * @description 十进制转rgb值
      */
     public static int[] toRgba(int color) {
-        int[] rgb = new int[3];
-        int b = color & 0xff;
-        int g = (color >> 8) & 0xff;
-        int r = (color >> 16) & 0xff;
+        int[] rgb = new int[4];
+        // a 代表透明度
+        int r, g, b, a;
+        if (color != 0) {
+            b = color & 0xff;
+            g = (color >> 8) & 0xff;
+            r = (color >> 16) & 0xff;
+            a = 255;
+        } else {
+            b = 0;
+            g = 0;
+            r = 0;
+            a = 0;
+        }
         rgb[0] = r;
         rgb[1] = g;
         rgb[2] = b;
+        rgb[3] = a;
+        return rgb;
+    }
+
+    public static int[] toThreeRgba(int color) {
+        int[] rgb = new int[4];
+        // a 代表亮度
+        int r, g, b, a;
+        if (color != 0) {
+            b = color & 0xff;
+            g = (color >> 8) & 0xff;
+            r = (color >> 16) & 0xff;
+            a = 255;
+        } else {
+            b = 0;
+            g = 0;
+            r = 0;
+            a = 255;
+        }
+        rgb[0] = r;
+        rgb[1] = g;
+        rgb[2] = b;
+        rgb[3] = a;
+        return rgb;
+    }
+
+    public static int[] toThreeFanRgba(int color) {
+        int[] rgb = new int[4];
+        // a 代表亮度
+        int r, g, b, a;
+        new Color(4.2f, 2.2f, 3.2f);
+        if (color != 0) {
+            b = color & 0xff;
+            g = (color >> 8) & 0xff;
+            r = (color >> 16) & 0xff;
+            a = 255;
+        } else {
+            b = 0;
+            g = 0;
+            r = 0;
+            a = 255;
+        }
+        rgb[0] = r;
+        rgb[1] = g;
+        rgb[2] = b;
+        rgb[3] = a;
         return rgb;
     }
 
