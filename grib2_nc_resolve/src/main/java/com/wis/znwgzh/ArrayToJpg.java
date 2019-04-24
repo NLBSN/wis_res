@@ -1,29 +1,18 @@
 package com.wis.znwgzh;
 
-import org.junit.Test;
-
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.text.DecimalFormat;
-import java.util.Random;
 
 /**
- * @Description: wis_res
+ * @Description: wis_res    将读取出来的nc文件出成图片
  * @author: fan
  * @Date: Created in 2019/4/21 14:39
  * @Modified By:
  */
 public class ArrayToJpg {
-
-    @Test
-    public void test11() {
-        Double f = Double.valueOf((255 / 65534));
-        System.out.println(f);
-    }
-
 
     public static void main(String[] args) throws Exception {
         Float factor = 0.0038911099581896F;
@@ -52,10 +41,9 @@ public class ArrayToJpg {
                 }
             }
         } catch (Exception e) {
-            System.out.println("-------" + tmp);
             e.printStackTrace();
         }
-        ImageIO.write(image, "png", new FileOutputStream(new File("D:\\data\\ec\\test.jpg")));
+        ImageIO.write(image, "png", new FileOutputStream(new File(jpgName)));
 
 
     }
@@ -188,26 +176,6 @@ public class ArrayToJpg {
             result[i] = (byte) (high * 16 + low);
         }
         return result;
-    }
-
-    @Test
-    public void test() throws Exception {
-
-        Random r = new Random();
-        BufferedImage b = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-        Graphics g = b.getGraphics();
-
-        Color[][] arr = new Color[100][100];// 一个像素点
-
-        for (int n = 0; n < 100; n++) {
-            for (int m = 0; m < 100; m++) {
-                arr[n][m] = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
-                g.setColor(arr[n][m]);
-                g.fillRect(n * 10, m * 10, 10, 10);
-            }
-        }
-
-        ImageIO.write(b, "png", new FileOutputStream(new File("D:\\data\\ec\\test.jpg")));
     }
 
     /**

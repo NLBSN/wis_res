@@ -52,7 +52,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.parse_report.Main</mainClass>
+                            <mainClass>com.parse_report.GenerateGIF.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
