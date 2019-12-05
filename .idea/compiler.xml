@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="parse_haiqu_v2" />
+        <module name="json" />
+        <module name="parse_report" />
+        <module name="grib2_nc_resolve" />
+        <module name="gdfs" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cimiss" target="1.8" />
+      <module name="gdfs" target="1.8" />
+      <module name="grib2_nc_resolve" target="1.8" />
+      <module name="json" target="1.8" />
+      <module name="parse_haiqu_v2" target="1.8" />
+      <module name="parse_report" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
