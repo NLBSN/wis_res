@@ -7,7 +7,7 @@ import java.io.*;
 import java.io.FileWriter;
 
 /**
- * @Description: wis_res    这个里面包含了读取和创建nc文件两块
+ * @Description: wis_res    这个里面包含了读取nc文件，并将结果写到txt中
  * @author: fan
  * @Date: Created in 2019/4/21 11:06
  * @Modified By:
