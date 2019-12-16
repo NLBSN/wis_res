@@ -21,7 +21,12 @@ import java.util.List;
 public class Utils {
     private HashMap<File, LinkedList<File>> hashMap = new HashMap();
 
-    public void copyGrib2OrNc(String filename, String newFileName) {
+    /**
+     * @param filename
+     * @param newFileName
+     * @param element
+     */
+    public void copyGrib2OrNc(String filename, String newFileName, String element) {
         NetcdfFile dataFile = null;
         NetcdfFileWriter netcdfFileWriter = null;
         try {
@@ -29,7 +34,7 @@ public class Utils {
             Variable lat = dataFile.findVariable("lat");
             Variable lon = dataFile.findVariable("lon");
             Variable time = dataFile.findVariable("time");
-            Variable dataVar = dataFile.findVariable("Total_cloud_cover_convective_cloud");// Total_cloud_cover_surface
+            Variable dataVar = dataFile.findVariable(element);
 
             if (dataVar == null) {
                 System.out.printf("此文件没有处理：%s\n", filename);
@@ -79,7 +84,7 @@ public class Utils {
             }
 
             // 创建变量名称为cloudjudge的变量，对应的维度为dims,该dims为上面定义的一个ArrayList<Diminsion>，该list包含2个维度，经度和维度
-            Variable v = netcdfFileWriter.addVariable(null, "Total_cloud_cover_convective_cloud", dataVar.getDataType(), dims);
+            Variable v = netcdfFileWriter.addVariable(null, element, dataVar.getDataType(), dims);
             List<Attribute> li_v = dataVar.getAttributes();
             for (Attribute attribute : li_v) {
                 netcdfFileWriter.addVariableAttribute(v, attribute);
@@ -137,14 +142,33 @@ public class Utils {
         }
     }
 
-    public void traversingFolders(String srcDir, String dstDir) {
+    /**
+     * 遍历文件夹并处理相关的文件
+     *
+     * @param srcDir
+     * @param dstDir
+     * @param element
+     */
+    public void traversingFolders(String srcDir, String dstDir, String element, int fileLength, String oldSuff, String newSuff) {
         File srcFile = new File(srcDir);
         File[] files = srcFile.listFiles();
         for (File temFile : files) {
             if (temFile.isDirectory()) {
-                traversingFolders(temFile.toString(), dstDir);
+                traversingFolders(temFile.toString(), dstDir, element, fileLength, oldSuff, newSuff);
             } else if (temFile.isFile()) {
-                copyGrib2OrNc(temFile.toString(), dstDir + "\\" + temFile.getName().substring(14, 22) + temFile.getName().substring(36, 38) + "\\" + temFile.getName().replace("bin", "nc"));
+                // Y:\NAFP\NCEP\GFS\0p25    V:\cloud_cover_forecast\model\NCEP\surface\TCC    Total_cloud_cover_convective_cloud
+                // String newFileName = dstDir + "\\" + temFile.getName().substring(14, 22) + temFile.getName().substring(36, 38) + "\\" + temFile.getName().replace("bin", "nc");
+                if (temFile.getName().length() == fileLength) {
+                    // 文件名的拼接
+                    String dirName = dstDir + "\\" + temFile.getName().substring(8, 18);
+                    File newDir = new File(dirName);
+                    if (!newDir.exists()) {
+                        newDir.mkdirs();
+                    }
+                    String newFileName = dirName + "\\" + temFile.getName().replace(oldSuff, newSuff);
+                    copyGrib2OrNc(temFile.toString(), newFileName, element);
+                }
+
             }
         }
 
